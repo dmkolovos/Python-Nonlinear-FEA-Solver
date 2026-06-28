@@ -1,32 +1,37 @@
 # Python Nonlinear FEA Solver (2D)
 
-A custom, object-oriented Finite Element Analysis (FEA) solver written entirely in Python from scratch. This project is capable of handling **Geometric Nonlinearity** (Large Displacements) and **Material Nonlinearity** (Hyperelasticity), validated against commercial software (ANSYS).
+A custom, object-oriented Finite Element Analysis (FEA) solver written entirely in Python from scratch. This project is capable of handling **Geometric Nonlinearity** (Large Displacements) and **Material Nonlinearity** (Hyperelasticity), strictly validated against commercial computational mechanics software (e.g., ANSYS).
 
 ## 📌 Project Overview
-While many engineers treat FEA software as a "black box", the development of accurate Digital Twins requires a deep understanding of the underlying computational mechanics. This solver was built to explicitly model complex nonlinear behaviors in 2D continuous structures.
+While many engineers treat FEA software as a "black box", the development of accurate Digital Twins and Predictive models requires a deep understanding of the underlying computational physics. This solver was built to explicitly model complex nonlinear behaviors in 2D continuous structures.
 
 The solver features **Isoparametric Quad4 elements**, a **Total Lagrangian** formulation for large deformations, and a robust **Newton-Raphson** iterative scheme for nonlinear equilibrium finding.
 
 ## 🚀 Key Implementations
 
-* **Geometric Nonlinearity:** Handles large displacement kinematics using a Total Lagrangian approach, properly updating the deformation gradient and geometric stiffness matrices.
-* **Hyperelastic Material Laws:** Beyond linear elasticity, the solver incorporates a **Neo-Hookean** material model. It analytically computes the 2nd Piola-Kirchhoff stress tensor and the tangent constitutive matrix.
-* **Nonlinear Solver:** A custom implementation of the Newton-Raphson method with load-stepping and dynamic residual tolerance tracking.
-* **Dynamic Analysis (Linear):** Includes a Newmark-beta integration scheme for transient dynamic response analysis.
+* **Geometric Nonlinearity:** Handles large displacement kinematics using a Total Lagrangian approach, properly updating the deformation gradient and the nonlinear strain-displacement matrices ($B_{NL}$).
+* **Hyperelastic Material Laws:** Beyond standard linear elasticity, the solver incorporates a **Neo-Hookean** material model. It analytically computes the 2nd Piola-Kirchhoff stress tensor and the tangent constitutive (material stiffness) matrix.
+* **Nonlinear Solver:** A custom implementation of the Newton-Raphson method with displacement-control load-stepping and dynamic residual tolerance tracking.
 
-## 📊 Validation
-The solver's accuracy (displacements, principal stresses, and reaction forces) was benchmarked and strictly validated against equivalent nonlinear models built in **ANSYS**, demonstrating near-zero error margins.
+## 📊 Validation & Results
+The solver's accuracy (displacements, principal stresses, and reaction forces) was benchmarked and strictly validated. It demonstrates robust convergence and near-zero error margins even under massive mechanical deformations.
 
-*(Place an image from your `images/` folder here showing the Force-Displacement curve or stress fields)*
-`![Nonlinear Response](images/force_disp.png)`
+### Force-Displacement Curve (Validation)
+The nonlinear response captures the stiffening/softening effects accurately under large strains.
+![Nonlinear Response](images/force_disp.png)
+
+### Large Deformations (Kinematics)
+The solver flawlessly handles complex mesh distortions (Undeformed vs. Deformed states) using the Total Lagrangian framework.
+![Deformed Shape](images/deformed_combined.png)
 
 ## 🛠️ Tech Stack
 * **Language:** Python
-* **Mathematics & Matrices:** NumPy, SciPy (`scipy.linalg` for sparse matrix inversion)
+* **Mathematics & Matrices:** NumPy, SciPy (`scipy.linalg` for fast and stable linear algebra operations)
 * **Visualization:** Matplotlib (for stress fields and reaction curves)
 
 ## 💻 Repository Structure
-* `src/element_quad4.py`: Isoparametric shape functions, Jacobian, and B-matrix formulation.
-* `src/materials.py`: Linear Elastic and Hyperelastic (Neo-Hookean) material class definitions.
+* `images/`: Validation plots and visualizations.
+* `src/element_quad4.py`: Isoparametric shape functions, Jacobian mapping, and nonlinear B-matrix formulation.
+* `src/materials.py`: Hyperelastic (Neo-Hookean) material class definitions and continuum mechanics invariants.
 * `src/solver_nr.py`: The Newton-Raphson nonlinear equilibrium solver algorithm.
-* `src/main.py`: Model assembly, constraint application, and execution.
+* `src/main.py`: Model assembly, boundary constraint application, and execution pipeline.
